@@ -1,9 +1,20 @@
 import { Router } from 'express';
 
 import { CategoriesRepository } from '../repositories/CategoriesRepository';
+import { CreateCategoryService } from '../services/CreateCategoryService';
 
 const categoriesRouter = Router();
 const categoriesRepository = new CategoriesRepository();
+
+categoriesRouter.post('/', (req, res) => {
+  const { name, description } = req.body;
+
+  const createCategoryService = new CreateCategoryService(categoriesRepository);
+
+  const category = createCategoryService.execute({ name, description });
+
+  return res.status(201).json({ category });
+});
 
 categoriesRouter.get('/', (req, res) => {
   const categories = categoriesRepository.findAll();
@@ -23,22 +34,6 @@ categoriesRouter.get('/:categoryName', (req, res) => {
   }
 
   return res.json({ category });
-});
-
-categoriesRouter.post('/', (req, res) => {
-  const { name, description } = req.body;
-
-  const categoryExists = categoriesRepository.findByName(name);
-
-  if (categoryExists) {
-    return res
-      .status(404)
-      .json({ status: 'error', message: 'Category already exists.' });
-  }
-
-  const category = categoriesRepository.create({ name, description });
-
-  return res.status(201).json({ category });
 });
 
 export { categoriesRouter };

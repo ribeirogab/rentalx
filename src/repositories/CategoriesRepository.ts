@@ -1,6 +1,8 @@
 import { v4 as uuidV4 } from 'uuid';
 
+import { ICreateCategoryDTO } from '../dtos/ICreateCategoryDTO';
 import { Category } from '../model/Category';
+import { ICategoriesRepository } from './ICategoriesRepository';
 
 interface IFilter {
   category: Category;
@@ -10,12 +12,7 @@ interface IFilter {
   };
 }
 
-interface ICreateCategoryDTO {
-  name: string;
-  description: string;
-}
-
-export class CategoriesRepository {
+export class CategoriesRepository implements ICategoriesRepository {
   private categories: Category[];
 
   constructor() {
